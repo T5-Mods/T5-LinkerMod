@@ -33,6 +33,20 @@ struct MessageWindow
 	int messageIndex;
 };
 
+struct Glyph
+{
+	unsigned __int16 letter;
+	char x0;
+	char y0;
+	char dx;
+	char pixelWidth;
+	char pixelHeight;
+	float s0;
+	float t0;
+	float s1;
+	float t1;
+};
+
 struct Font_s
 {
 	const char* fontName;
@@ -40,7 +54,7 @@ struct Font_s
 	int glyphCount;
 	Material* material;
 	Material* glowMaterial;
-	void* glyphs;
+	Glyph* glyphs;
 };
 
 struct languageInfo_t

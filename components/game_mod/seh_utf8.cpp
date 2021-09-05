@@ -2,7 +2,9 @@
 
 int R_LetterWidth(unsigned int letter, Font_s* font)
 {
-	return ((int(__cdecl*)(uint32_t, Font_s*))0x006D2FA0)(letter, font);
+	// fuck inline
+	// R_GetCharacterGlyph
+	return ((Glyph* (__cdecl*)(Font_s*, uint32_t))0x006D2FA0)(font, letter)->dx;
 }
 
 int SEH_DecodeLetter(unsigned int firstChar, unsigned int secondChar, int* usedCount, int* pbIsTrailingPunctuation)
@@ -97,47 +99,97 @@ int __cdecl R_ConsoleTextWidthU8(const char* textPool, int poolSize, int firstCh
 	int stopPos = (poolSize - 1) & (charCount + firstChar);
 	int parsePos = firstChar;
 	int width = 0;
+
 	while (parsePos != stopPos)
 	{
 		int usedCharCount = 0;
 		int letter = SEH_DecodeLetterU8(textPool + parsePos, &usedCharCount);
 		parsePos = indexMask & (usedCharCount + parsePos);
-		if (letter == 94
-			&& (&textPool[parsePos] && textPool[parsePos] != 94 && textPool[parsePos] >= 48 && textPool[parsePos] <= 64
-				|| &textPool[parsePos] && textPool[parsePos] != 94 && textPool[parsePos] == 70))
+
+		// color code or whatever
+		if (letter == '^' && textPool[parsePos] != '^' && 
+			(textPool[parsePos] >= '0' && textPool[parsePos] <= '@' || 
+			textPool[parsePos] != '^' && textPool[parsePos] == 'F'))
 		{
 			parsePos = indexMask & (parsePos + 1);
 		}
-		else if (letter == 94 && (textPool[parsePos] == 1 || textPool[parsePos] == 2))
+		// icons
+		else if (letter == '^' && (textPool[parsePos] == 1 || textPool[parsePos] == 2))
 		{
 			width += (font->pixelHeight * (textPool[indexMask & (parsePos + 1)] - 16) + 16) / 32;
 			parsePos = indexMask & (parsePos + 7);
 		}
+		// normal text
 		else
 		{
 			width += R_LetterWidth(letter, font);
 		}
 	}
+
 	return width;
+}
+
+void __cdecl DB_BuildOSPath(const char* zoneName, const char* ext, int size, char* filename)
+{
+	((void(__cdecl*)(const char*, const char*, int, char*))0x4644A0)(zoneName, ext, size, filename);
+
+	MessageBoxA(NULL, filename, "INFO", MB_OK);
+}
+
+int __cdecl SEH_StrLengthU8(const char* str)
+{
+	int printedCnt = 0;
+	size_t idx = 0;
+	while (idx < strlen(str))
+	{
+		int usedCharCnt = 0;
+		auto letter = SEH_DecodeLetterU8(str + idx, &usedCharCnt);
+
+		idx += usedCharCnt;
+
+		if (letter == '^')
+		{
+			char c = str[idx];
+
+			if (c != '^' && c >= '0' && c <= '@' || c && c != '^' && c == 'F')
+			{
+				++idx;
+			}
+		}
+		else if (letter == '\n' || letter == '\r')
+		{
+			continue;
+		}
+		else
+		{
+			++printedCnt;
+		}
+	}
+
+	return printedCnt;
 }
 
 languageInfo_t* g_languages = (languageInfo_t*)0xB7AEAC;
 
 void UseUTF8()
 {
+	// PatchCall(0x7A37B0, (PBYTE)&DB_BuildOSPath);
+
 	// hack
 	PatchMemory(0x54EF40, (PBYTE)"\xE9", 1);
 	PatchMemory(0x79BBA0, (PBYTE)"\xE9", 1);
 	PatchMemory(0x6D3500, (PBYTE)"\xE9", 1);
+	PatchMemory(0x50FA90, (PBYTE)"\xE9", 1);
 
 	PatchJump(0x54EF40, (PBYTE)&SEH_ReadCharFromStringU8);
 	PatchJump(0x79BBA0, (PBYTE)&PrintableCharsCountU8);
 	PatchJump(0x6D3500, (PBYTE)&R_ConsoleTextWidthU8);
+	PatchJump(0x50FA90, (PBYTE)&SEH_StrLengthU8);
 
 	// dont replace fulljap with japanese
 	// as we replaced it with schinese
-	PatchMemory(0x833B5F, (PBYTE)"\xEB", 1);
+	// PatchMemory(0x833B5F, (PBYTE)"\xEB", 1);
 	// dont validate localized iwd
 	PatchMemory(0x85F1D5, (PBYTE)"\xE9\xEC\x01\x00\x00\x90", 6);
-	g_languages[13] = { 0, "schinese", "sc_" };
+	g_languages[11] = { 0, "schinese", "sc_" };
 }
