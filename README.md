@@ -1,4 +1,4 @@
-# LinkerMod-Enhanced
+# LinkerMod Enhanced
 ###### Enhancements for the Black Ops' Mod Tools. Enhanced 2X.
 #### [Original LinkerMod by SE2Dev and Nukem9](https://github.com/Nukem9/LinkerMod)
 
