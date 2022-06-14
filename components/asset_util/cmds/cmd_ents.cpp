@@ -35,6 +35,8 @@ struct EntityTable
 
 int ParseEnts(const char* ents_str, EntityTable* ents_table)
 {
+	std::vector<const char*> stack;
+
 	const char* str_start = NULL;
 	const char* ent_start = NULL;
 	int ent_level = 0; // Its like ESP but for ents!
@@ -64,7 +66,7 @@ int ParseEnts(const char* ents_str, EntityTable* ents_table)
 				}
 				else if (strType == ParseEnts_StrType::VALUE)
 				{
-					kv.value = std::move(str);
+					kv.value = str;
 					ent.push_back(kv);
 					kv.key.clear();
 					kv.value.clear();
@@ -191,10 +193,10 @@ int AddBrushes(EntityTable* ents_table)
 			continue;
 		
 		KeyValuePair kv;
-		kv.key.clear();
+		kv.key = "";
 		std::string value = FormatBrush(offset, 64);
 		
-		kv.value = std::move(value);
+		kv.value = value;
 		
 		ent.push_back(kv);
 	}
@@ -314,7 +316,6 @@ int Ents_ExtractFromFastfile(const char* filepath, const char* outpath = NULL) {
 		//Any fastfiles that claim they decompress to a file >= 1GB
 		//are either corrupt or do not belong to the vanilla game
 		Con_Error("ERROR: Skipping %s\n", filepath);
-		delete[] cBuf;
 		return 1;
 	}
 

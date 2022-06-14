@@ -32,7 +32,7 @@ BOOL GameMod_Init(HMODULE hModule)
 	//
 	// Make sure that the user is not running the German version of Black Ops
 	//
-	ASSERT_MSG(!GameMod_IsGermanBinary(), "The German version of Call of Duty: Black Ops is not supported! Alternatively, you can download a RoW EXE of Black Ops.");
+	ASSERT_MSG(!GameMod_IsGermanBinary(), "The German version of Call of Duty: Black Ops is not supported!");
 
 	//
 	// Disable STDOUT buffering

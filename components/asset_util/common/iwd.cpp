@@ -24,12 +24,11 @@ int __cdecl IWD_IWDHandler(const char* iwdPath, const char* iwdName)
 	}
 	else if (g_extractImages.ValueBool())
 	{
-		char subdst[MAX_PATH];
-		sprintf_s(subdst, "IMAGE");
+		sprintf_s(sub, "IMAGE");
 
 		if (g_extractSounds.ValueBool())
 		{
-			sprintf_s(sub, "%s and %s", subdst, "AUDIO");
+			sprintf_s(sub, "%s and %s", sub, "AUDIO");
 		}
 	}
 	else
@@ -93,8 +92,6 @@ int __cdecl IWD_IWDExtract(const char* iwdPath, const char* iwdName)
 	}
 
 	int extractedCount = 0;
-	size_t lenDirImage = strlen(IWD_DIR_IMAGE);
-	size_t lenDirSound = strlen(IWD_DIR_SOUND);
 	for (int f = 0; f < (int)mz_zip_reader_get_num_files(&iwd); f++)
 	{
 		mz_zip_archive_file_stat file_stat;
@@ -105,12 +102,12 @@ int __cdecl IWD_IWDExtract(const char* iwdPath, const char* iwdName)
 			return -1;
 		}
 
-		if (g_extractImages.ValueBool() && _strnicmp(IWD_DIR_IMAGE, file_stat.m_filename, lenDirImage) == 0)
+		if (g_extractImages.ValueBool() && _strnicmp(IWD_DIR_IMAGE, file_stat.m_filename, strlen(IWD_DIR_IMAGE)) == 0)
 		{
 			IWD_IWDExtractFile(&iwd, file_stat.m_filename);
 			continue;
 		}
-		else if (g_extractSounds.ValueBool() && _strnicmp(IWD_DIR_SOUND, file_stat.m_filename, lenDirSound) == 0)
+		else if (g_extractSounds.ValueBool() && _strnicmp(IWD_DIR_SOUND, file_stat.m_filename, strlen(IWD_DIR_SOUND)) == 0)
 		{
 			IWD_IWDExtractFile(&iwd, file_stat.m_filename);
 			continue;

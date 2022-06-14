@@ -40,3 +40,4 @@ components/gsc_parser/src/cpp/parser
 !*.lib
 
 installer/tmp
+components.7z

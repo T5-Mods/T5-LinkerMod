@@ -43,12 +43,9 @@ BOOL AssetViewerMod_Init()
 	//
 	if (AllocConsole())
 	{
-		if (freopen("CONOUT$", "w", stdout) == NULL)
-			return FALSE;
-		if (freopen("CONOUT$", "w", stderr) == NULL)
-			return FALSE;
-		if (freopen("CONIN$", "r", stdin) == NULL)
-			return FALSE;
+		freopen("CONOUT$", "w", stdout);
+		freopen("CONOUT$", "w", stderr);
+		freopen("CONIN$", "r", stdin);
 	}
 
 #if USE_NSIGHT_FIX
@@ -105,34 +102,13 @@ BOOL AssetViewerMod_Init()
 	return TRUE;
 }
 
-BOOL AssetViewerMod_Destroy()
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {
-	//
-	// Destroy an external console for AssetViewer
-	//
-	if (AllocConsole())
+	if (ul_reason_for_call == DLL_PROCESS_ATTACH)
 	{
-		fclose(stdout);
-		fclose(stderr);
-		fclose(stdin);
+		DisableThreadLibraryCalls(hModule);
+		return AssetViewerMod_Init();
 	}
 
 	return TRUE;
-}
-
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
-{
-	BOOL initialized = TRUE;
-	switch (ul_reason_for_call)
-	{
-	case DLL_PROCESS_ATTACH:
-		DisableThreadLibraryCalls(hModule);
-		initialized = AssetViewerMod_Init();
-		break;
-	case DLL_PROCESS_DETACH:
-		initialized = AssetViewerMod_Destroy();
-		break;
-	}
-
-	return initialized;
 }
