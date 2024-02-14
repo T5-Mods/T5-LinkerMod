@@ -21,4 +21,4 @@
 
 ## Requirements
 - [Call of Duty: Black Ops](http://store.steampowered.com/app/42700/)
-- Call of Duty: Black Ops - Mod Tools (BETA) (steam://install/42740)
+- Call of Duty: Black Ops - Mod Tools (BETA)
