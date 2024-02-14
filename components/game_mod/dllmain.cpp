@@ -684,7 +684,7 @@ BOOL GameMod_Init(HMODULE hModule)
 	IsReflectionMode() ? ReflectionMod_Init() : ReShade_Init();
 
 	// Replace game encoding with utf8
-	UseUTF8();
+	//UseUTF8();
 
 	return TRUE;
 }
