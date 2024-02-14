@@ -1,8 +1,8 @@
-# LinkerMod Enhanced
-###### Enhancements for the Black Ops' Mod Tools. Enhanced 2X.
+# T5-LinkerMod
+###### Much-needed LinkerMod updates
 #### [Original LinkerMod by SE2Dev and Nukem9](https://github.com/Nukem9/LinkerMod)
 
-## Join [Venom's Mod Warehouse, the home of LinkerMod Enhanced](https://discord.gg/NSsYXecFxf)
+## Join [LinkerMod's Discord](https://discord.com/invite/e4hfPvdepx)
 
 ## Features:
 - Mod Support
