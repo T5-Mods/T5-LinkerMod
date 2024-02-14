@@ -102,6 +102,7 @@
 #include "r_stream.h"
 #include "r_image_load_common.h"
 #include "r_image_load_obj.h"
+//#include "seh_utf8.h"
 
 #include "win_localize.h"
 #include "win_exception.h"
